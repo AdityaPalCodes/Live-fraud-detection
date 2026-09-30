@@ -353,7 +353,7 @@ The system continuously tracks feature drift and distribution shifts:
 
 ## Project Limitations & Future Roadmap
 
-### Current Limitations
+#### Current Limitations
 1. **Anonymized Latent PCA Variables**: The dataset contains PCA components rather than raw categorical attributes (card brands, merchant MCCs, merchant geographic locations).
 2. **Fixed 48-Hour Temporal Window**: Long-term monthly seasonality and holiday shopping surges cannot be fully observed.
 3. **Delayed Ground Truth Feedback**: In commercial banking, fraudulent chargebacks often take 30 to 90 days to register.
