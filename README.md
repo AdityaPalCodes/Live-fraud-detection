@@ -218,7 +218,7 @@ real-time-fraud-detection/
 
 ### 1. Clone & Set Up Environment
 ```bash
-git clone https://github.com/your-username/real-time-fraud-detection.git
+git clone https://github.com/AdityaPalCodes/Live-fraud-detection.git
 cd real-time-fraud-detection
 
 # Create and activate Python 3.11 virtual environment
