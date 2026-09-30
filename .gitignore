@@ -1,0 +1,97 @@
+# Python virtual environments
+.venv/
+venv/
+ENV/
+env/
+
+# Python cache & build
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Testing & Coverage
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+
+# Jupyter Notebooks
+.ipynb_checkpoints/
+*/.ipynb_checkpoints/*
+
+# MLflow
+mlruns/
+mlartifacts/
+
+# Environment and sensitive files
+.env
+*.local
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Large dataset raw downloads (if huge)
+# Keep directory structure with .gitkeep
+data/raw/*.csv
+data/processed/*.csv
+!data/raw/.gitkeep
+!data/processed/.gitkeep
+models/artifacts/*.pkl
+models/artifacts/*.joblib
+models/artifacts/*.json
+!models/artifacts/.gitkeep
+
+
+
+
+# Local databases
+*.db
+*.sqlite
+*.sqlite3
+
+# ML model files
+models/**/*.pkl
+models/**/*.joblib
+models/**/*.onnx
+models/**/*.h5
+models/**/*.keras
+models/**/*.pt
+models/**/*.pth
+models/**/*.bin
+
+# Logs
+*.log
+logs/
+
+# Local generated data
+data/raw/*
+data/processed/*
+
+# Keep directory structure
+!data/raw/.gitkeep
+!data/processed/.gitkeep
+!models/artifacts/.gitkeep

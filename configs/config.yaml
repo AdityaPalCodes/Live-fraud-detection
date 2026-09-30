@@ -1,0 +1,64 @@
+project:
+  name: "real-time-fraud-detection"
+  version: "1.0.0"
+  random_seed: 42
+
+data:
+  raw_path: "data/raw/creditcard.csv"
+  processed_dir: "data/processed"
+  test_size: 0.20
+  val_size: 0.15
+  time_column: "Time"
+  target_column: "Class"
+  amount_column: "Amount"
+
+features:
+  time_windows_hours: [1, 6, 24]
+  include_amount_transformations: true
+  include_cyclical_time: true
+
+models:
+  baseline:
+    max_iter: 1000
+    class_weight: "balanced"
+  random_forest:
+    n_estimators: 100
+    max_depth: 12
+    n_jobs: -1
+    class_weight: "balanced_subsample"
+  lightgbm:
+    n_estimators: 150
+    max_depth: 6
+    learning_rate: 0.05
+    scale_pos_weight: 100
+    n_jobs: -1
+  isolation_forest:
+    n_estimators: 100
+    contamination: 0.002
+    random_state: 42
+    n_jobs: -1
+
+calibration:
+  method: "isotonic"  # or "sigmoid"
+  cv: 3
+
+decision_engine:
+  default_fraud_threshold: 0.65
+  default_review_threshold: 0.30
+  fp_cost: 25.0    # Cost of investigating / customer friction on False Positive ($)
+  fn_cost: 250.0   # Cost of missed fraud on False Negative (average fraud chargeback loss $)
+  anomaly_weight: 0.20
+  supervised_weight: 0.80
+
+monitoring:
+  psi_threshold_warning: 0.10
+  psi_threshold_alert: 0.25
+  drift_features: ["Amount", "V14", "V10", "V4", "V12"]
+
+api:
+  host: "0.0.0.0"
+  port: 8000
+  model_dir: "models/artifacts"
+
+database:
+  url: "sqlite:///./fraud_detection.db"

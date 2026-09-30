@@ -1,0 +1,73 @@
+services:
+  fraud-api:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.api
+    container_name: fraud-detection-api
+    ports:
+      - "8000:8000"
+    environment:
+      - API_HOST=0.0.0.0
+      - API_PORT=8000
+      - FRAUD_THRESHOLD=0.65
+      - REVIEW_THRESHOLD=0.30
+      - FP_COST=25.0
+      - FN_COST=250.0
+      - DATABASE_URL=sqlite:///./fraud_detection.db
+    volumes:
+      - fraud_data:/app/data
+      - ./models/artifacts:/app/models/artifacts
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+
+  fraud-dashboard:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.dashboard
+    container_name: fraud-detection-dashboard
+    ports:
+      - "8501:8501"
+    environment:
+      - FRAUD_THRESHOLD=0.65
+      - REVIEW_THRESHOLD=0.30
+    volumes:
+      - fraud_data:/app/data
+      - ./models/artifacts:/app/models/artifacts
+    depends_on:
+      - fraud-api
+    restart: unless-stopped
+
+  # Optional Kafka streaming infrastructure (enabled with: docker compose --profile streaming up)
+  zookeeper:
+    image: confluentinc/cp-zookeeper:7.5.0
+    container_name: fraud-zookeeper
+    profiles: ["streaming"]
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+    ports:
+      - "2181:2181"
+
+  kafka:
+    image: confluentinc/cp-kafka:7.5.0
+    container_name: fraud-kafka
+    profiles: ["streaming"]
+    depends_on:
+      - zookeeper
+    ports:
+      - "9092:9092"
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092,PLAINTEXT_INTERNAL://kafka:29092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_INTERNAL:PLAINTEXT
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+
+volumes:
+  fraud_data:
